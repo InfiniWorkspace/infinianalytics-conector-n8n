@@ -82,15 +82,20 @@ jobs:
         with:
           node-version: 'lts/*'
           cache: 'npm'
-          registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Authenticate with npm
+      - name: Verify and configure npm auth
         run: |
-          echo "registry=https://registry.npmjs.org/" > .npmrc
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> .npmrc
+          if [ -z "$NPM_TOKEN" ]; then
+            echo "ERROR: NPM_TOKEN secret is not set or is empty"
+            exit 1
+          fi
+          echo "npm token is set (length: ${#NPM_TOKEN})"
+          printf 'registry=https://registry.npmjs.org/\n//registry.npmjs.org/:_authToken=%s\n' "$NPM_TOKEN" > .npmrc
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Release
         run: npm run release
