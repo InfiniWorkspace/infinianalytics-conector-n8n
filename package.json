@@ -5,15 +5,23 @@
 	"license": "MIT",
 	"homepage": "https://infini.es",
 	"keywords": [
-		"n8n-community-node-package"
+		"n8n-community-node-package",
+		"n8n",
+		"analytics",
+		"monitoring",
+		"automation",
+		"infini"
 	],
 	"author": {
 		"name": "Infini",
-		"email": ""
+		"email": "mantenimiento@infini.es"
 	},
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/InfiniWorkspace/infinianalytics-conector-n8n.git"
+	},
+	"bugs": {
+		"url": "https://github.com/InfiniWorkspace/infinianalytics-conector-n8n/issues"
 	},
 	"scripts": {
 		"build": "n8n-node build",
@@ -34,9 +42,6 @@
 			"dist/credentials/InfiniAnalyticsApi.credentials.js"
 		],
 		"nodes": [
-			"dist/nodes/InfiniAnalytics/InfiniAnalytics.node.js"
-		],
-		"n8nNodesMapping": [
 			"dist/nodes/InfiniAnalytics/InfiniAnalytics.node.js"
 		]
 	},

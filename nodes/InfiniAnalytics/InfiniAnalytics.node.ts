@@ -5,6 +5,7 @@ import {
 	INodeTypeDescription,
 	JsonObject,
 	NodeApiError,
+	NodeConnectionTypes,
 } from 'n8n-workflow';
 import { properties } from './InfiniAnalyticsProperties';
 
@@ -12,14 +13,16 @@ export class InfiniAnalytics implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Infini Analytics',
 		name: 'infiniAnalytics',
-		icon: 'file:logo_infini.png',
+		icon: 'file:logo_infini.svg',
 		group: ['transform'],
 		version: 1,
-		description: 'Connector for monitoring and debugging the runs of your automations and agents in analytics.infini.es',
+		subtitle: '={{$parameter["eventType"]}}',
+		description: 'Monitor and debug your automation runs in Infini Analytics',
 		defaults: { name: 'Infini Analytics' },
-		inputs: ['main'],
-		outputs: ['main'],
-		properties: properties,
+		usableAsTool: true,
+		inputs: [NodeConnectionTypes.Main],
+		outputs: [NodeConnectionTypes.Main],
+		properties,
 		credentials: [
 			{
 				name: 'infiniAnalyticsApi',
@@ -32,9 +35,6 @@ export class InfiniAnalytics implements INodeType {
 		const items = this.getInputData();
 		const returnData: INodeExecutionData[] = [];
 
-		const credentials = await this.getCredentials('infiniAnalyticsApi');
-		const token = credentials.token as string;
-
 		for (let i = 0; i < items.length; i++) {
 			const body = {
 				automation_id: this.getNodeParameter('automationId', i),
@@ -44,20 +44,27 @@ export class InfiniAnalytics implements INodeType {
 			};
 
 			try {
-				const response = await this.helpers.httpRequest({
-					method: 'POST',
-					url: 'https://api.analytics.infini.es/v1/register/',
-					headers: {
-						token,
-						'Content-Type': 'application/json',
+				const response = await this.helpers.httpRequestWithAuthentication.call(
+					this,
+					'infiniAnalyticsApi',
+					{
+						method: 'POST',
+						url: 'https://api.analytics.infini.es/v1/register/',
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						body,
+						json: true,
 					},
-					body,
-					json: true,
-				});
+				);
 
-				returnData.push({ json: (response as JsonObject) ?? {} });
+				returnData.push({ json: (response as JsonObject) ?? {}, pairedItem: i });
 			} catch (error) {
-				throw new NodeApiError(this.getNode(), error as JsonObject);
+				if (this.continueOnFail()) {
+					returnData.push({ json: { error: (error as Error).message }, pairedItem: i });
+					continue;
+				}
+				throw new NodeApiError(this.getNode(), error as JsonObject, { itemIndex: i });
 			}
 		}
 
