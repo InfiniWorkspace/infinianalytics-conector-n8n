@@ -86,3 +86,7 @@ The recommended pattern is to wrap your workflow with **Start** and **End** even
 - [n8n community nodes documentation](https://docs.n8n.io/integrations/community-nodes/)
 - [Infini Analytics platform](https://analytics.infini.es)
 - [Infini website](https://infini.es)
+
+## Maintenance
+
+This node is developed and maintained by the [Infini](https://infini.es) team. It is not open to external contributions. For support or issues, contact [mantenimiento@infini.es](mailto:mantenimiento@infini.es).
