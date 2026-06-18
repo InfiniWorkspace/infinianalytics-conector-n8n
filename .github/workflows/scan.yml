@@ -1,0 +1,14 @@
+name: Scan
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  scan:
+    name: n8n community package scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Scan published package
+        run: npx @n8n/scan-community-package n8n-nodes-infini-analytics
