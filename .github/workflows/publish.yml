@@ -87,6 +87,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Authenticate with npm
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
+
       - name: Release
         run: npm run release
         env:
