@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-infini-analytics",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"description": "Connector for monitoring and debugging the runs of your automations and agents in analytics.infini.es",
 	"license": "MIT",
 	"homepage": "https://infini.es",
