@@ -17,7 +17,7 @@ export class InfiniAnalytics implements INodeType {
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{$parameter["eventType"]}}',
-		description: 'Monitor and debug your automation runs in Infini Analytics',
+		description: 'Monitor and debug your automation runs in Infini Analytics. https://analytics.infini.es/',
 		defaults: { name: 'Infini Analytics' },
 		usableAsTool: true,
 		inputs: [NodeConnectionTypes.Main],
@@ -36,12 +36,19 @@ export class InfiniAnalytics implements INodeType {
 		const returnData: INodeExecutionData[] = [];
 
 		for (let i = 0; i < items.length; i++) {
-			const body = {
+			const eventType = this.getNodeParameter('eventType', i);
+
+			const body: { [key: string]: unknown } = {
 				automation_id: this.getNodeParameter('automationId', i),
 				execution_id: this.getNodeParameter('executionId', i),
-				event: this.getNodeParameter('eventType', i),
+				event: eventType,
 				description: this.getNodeParameter('description', i),
 			};
+
+			if (eventType === 'ERROR') {
+				body.error_id = this.getNodeParameter('errorId', i);
+				body.error_description = this.getNodeParameter('errorDescription', i);
+			}
 
 			try {
 				const response = await this.helpers.httpRequestWithAuthentication.call(

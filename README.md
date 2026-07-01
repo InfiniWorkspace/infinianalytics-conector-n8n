@@ -34,6 +34,7 @@ Supported event types:
 | **Start** | At the beginning of an automation run |
 | **Event** | At key checkpoints during execution |
 | **Warning** | When a non-critical issue is detected |
+| **Error** | When an error occurs; registers the execution as failed |
 | **End** | At the completion of an automation run |
 
 ## Credentials
@@ -72,13 +73,14 @@ The recommended pattern is to wrap your workflow with **Start** and **End** even
 ```
 [Trigger] → [Infini: Start] → [Step A] → [Infini: Event] → [Step B] → [Infini: End]
                                                  ↓ on error
-                                          [Infini: Warning]
+                                          [Infini: Error]
 ```
 
 **Parameter tips:**
 
 - **Automation ID** and **Execution ID** are provided by your Infini Analytics account. Use them as static values or pass them dynamically via n8n expressions.
 - **Description** accepts free text and n8n expressions. Use it to include dynamic context, for example: `Processed {{ $json.count }} records`.
+- When **Event Type** is set to **Error**, two extra fields appear: **Error ID** (a short code identifying the error) and **Error Description** (a detailed description, typically the error message from the platform or language). Registering an **Error** event marks the execution as failed.
 - Enable **Continue on Fail** on the node if you want analytics failures to never block your main workflow.
 
 ## Resources
